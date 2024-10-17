@@ -1,13 +1,259 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+html {
+  font-size: 62.5%;
+}
+
+body {
+  padding: 5rem;
+  background-color: #6082b6;
+}
+/* ******* */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 10rem;
+  padding: 0 3.2rem;
+  border-radius: 0.9rem;
+  margin-bottom: 5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.logo img {
+  width: 10rem;
+  height: 10rem;
+}
+
+.logo h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 0.7rem 2rem;
+  border-radius: 1rem;
+}
+
+.search {
+  display: flex;
+  justify-self: center;
+  border: none;
+  padding: 1.1rem 1.6rem;
+  font-size: 1.8rem;
+  border-radius: 0.7rem;
+  width: 50rem;
+  transition: all 0.3s;
+}
+.search::placeholder {
+  color: #bbb;
+}
+.search:focus {
+  outline: none;
+  transform: translateY(-2px);
+}
+.navigation {
+  display: flex;
+}
+.search-icon {
+  stroke: #6082b6;
+  width: 3rem;
+  height: 3rem;
+}
+.location-icon {
+  stroke: #fff;
+  width: 3rem;
+  height: 3rem;
+}
+.btn {
+  outline: "none";
+  background-color: #6082b6;
+  color: #fff;
+  font-size: 1.7rem;
+  padding: 1rem 2rem;
+  transition: all 0.3s;
+  border-radius: 1rem;
+}
+.btn:hover {
+  background-color: #6495ed;
+  color: #fff;
+}
+.navigation {
+  display: flex;
+  font-size: 2.2rem;
+  gap: 1rem;
+}
+.navigator:link,
+.navigator:visited {
+  background-color: #fff;
+  color: #6082b6;
+  border-radius: 5px;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+.navigator:hover {
+  background-color: #ddd;
+}
+.city-pic {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  margin-right: 2rem;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 20rem;
+  padding: 0 10rem;
+  background-color: #6494ed75;
+  margin-bottom: 5rem;
+}
+.left {
+  display: flex;
+  align-items: center;
+}
+.country-container {
+  color: #fff;
+}
+.city {
+  font-size: 3rem;
+  font-weight: 600;
+}
+.city-desc {
+  font-weight: 500;
+  font-size: 2.5rem;
+}
+.location {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #00000055;
+  padding: 1rem 2rem;
+  border-radius: 5rem;
+}
+.location span {
+  font-size: 2rem;
+  color: #fff;
+}
+
+.box {
+  background-color: #6494ed75;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 3rem;
+  margin-bottom: 4rem;
+}
+
+.grid {
+  display: grid;
+}
+.grid--5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.weather-report {
+  grid-template-columns: 55rem 1fr;
+  gap: 3rem;
+}
+.forecast {
+}
+.title {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #fff;
+  padding: 1rem;
+  color: #fff;
+  text-align: center;
+}
+.report-description {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 5rem;
+}
+.desc-temp {
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  text-align: center;
+  gap: 4rem;
+}
+.day {
+  font-size: 3rem;
+  font-weight: 600;
+}
+.weather-type {
+  font-weight: 500;
+  font-size: 2.5rem;
+}
+.description {
+  color: #fff;
+}
+.horizontal {
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+}
+.temperature {
+  display: flex;
+}
+.img-humid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+.condition-icon {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  margin: auto;
+}
+.forecast-icon {
+  width: 9.5rem;
+  height: 9.5rem;
+  border-radius: 50%;
+  margin: auto;
+  margin-bottom: 1.5rem;
+}
+.temp,
+.humidity {
+  font-weight: 700;
+  font-size: 2rem;
+  color: #fff;
+}
+.vertical {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.forecast-container {
+  height: 40rem;
+}
+.forecast-for-one-day {
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.forecast-for-one-day p {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #fff;
 }
