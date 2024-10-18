@@ -1,10 +1,84 @@
 import React, { Fragment, useState } from "react";
 
+async function fetchCountry(city) {
+  try {
+    const res = await fetch(
+      `http://api.positionstack.com/v1/forward?access_key=87232def3711d6af90f0213a9cc33b1b&query=${city}`
+    );
+    if (!res.ok) throw new Error("Country not found, please try again");
+    const data = await res.json();
+    const country = data.data[0].country;
+    return country;
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+async function fetchCityImage(city) {
+  try {
+    const res = await fetch(
+      `https://api.unsplash.com/search/photos?query=${city}&client_id=dnAcCMN0ayxLzG_D8NLYsu6Of8xd-2R1QqK54GQrJnk`
+    );
+    if (!res.ok) throw new Error("City image not found, please try again");
+    const data = await res.json();
+    const cityImage = data.results[0].urls.full;
+    return cityImage;
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+
+function getDayName(dateString) {
+  const date = new Date(dateString);
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const dayOfWeek = date.getDay();
+  return daysOfWeek[dayOfWeek];
+}
+
+async function getEssentialData(data, city) {
+  try {
+    const country = await fetchCountry(city);
+    const cityImage = await fetchCityImage(city);
+    const day = getDayName(data.dt_txt.split(" ")[0]);
+    const weatherIcon = ` https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    const description = data.weather[0].description;
+    const tempMax = data.main.temp_max.toFixed(1);
+    const tempMin = data.main.temp_min.toFixed(1);
+    const temp = data.main.temp;
+    const humidity = data.main.humidity;
+
+    const necessaryData = {
+      city,
+      country,
+      cityImage,
+      day,
+      weatherIcon,
+      description,
+      tempMax,
+      tempMin,
+      temp,
+      humidity,
+    };
+
+    return necessaryData;
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+
 export default function App() {
-  const [data, setData] = useState({});
+  const [todayData, setTodayData] = useState({});
+  const [fiveDayData, setFiveDayData] = useState([]);
   function handleSetData(necessaryData) {
-    console.log(necessaryData);
-    setData(necessaryData);
+    setTodayData(necessaryData[0]);
+    setFiveDayData(necessaryData.slice(1));
   }
   return (
     <>
@@ -18,26 +92,20 @@ export default function App() {
       </NavBar>
       <Main>
         <Header
-          cityImage={data.cityImage}
-          city={data.city}
-          country={data.country}
+          cityImage={todayData.cityImage}
+          city={todayData.city}
+          country={todayData.country}
         />
         <WeatherReport>
           <LocalWeatherReport
-            day={data.day}
-            description={data.description}
-            tempMax={data.tempMax}
-            tempMin={data.tempMin}
-            humidity={data.humidity}
-            weatherIcon={data.weatherIcon}
+            day={todayData.day}
+            description={todayData.description}
+            tempMax={todayData.tempMax}
+            tempMin={todayData.tempMin}
+            humidity={todayData.humidity}
+            weatherIcon={todayData.weatherIcon}
           />
-          <ForecastForDays>
-            <ForecastForOneDay />
-            <ForecastForOneDay />
-            <ForecastForOneDay />
-            <ForecastForOneDay />
-            <ForecastForOneDay />
-          </ForecastForDays>
+          <ForecastForDays fiveDayData={fiveDayData} />
         </WeatherReport>
       </Main>
     </>
@@ -59,89 +127,36 @@ function Logo() {
 
 function SearchBar({ handleSetData }) {
   const [city, setCity] = useState("Addis Ababa");
+
   function handleInput(e) {
     setCity(e.target.value);
   }
   function handleFetch(e) {
     const KEY = "08bd2aacf2a275d513f3d7615a27a8e6";
+
     async function fetchForecastData() {
       try {
-        e.preventDefault();
         const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}`
+          `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${KEY}`
         );
         if (!res.ok) throw new Error("City not found, please try again");
         const data = await res.json();
-        const country = await fetchCountry();
-        const cityImage = await fetchCityImage();
-        const day = getDay();
-        const weatherIcon = ` https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-        const description = data.weather[0].description;
-        const tempMax = data.main.temp_max.toFixed(1);
-        const tempMin = data.main.temp_min.toFixed(1);
-        const temp = data.main.temp;
-        const humidity = data.main.humidity;
-        const necessaryData = {
-          city: data.name,
-          country,
-          cityImage,
-          day,
-          weatherIcon,
-          description,
-          tempMax,
-          tempMin,
-          temp,
-          humidity,
-        };
-        handleSetData(necessaryData);
-        console.log(necessaryData);
+        let today = "";
+        const forecastData = data.list.filter((newData) => {
+          const date = newData.dt_txt.split(" ")[0];
+          const flag = date !== today;
+          today = date;
+          return flag;
+        });
+        const essentialData = await Promise.all(
+          forecastData.map(async (data) => {
+            const essential = await getEssentialData(data, city);
+            return essential;
+          })
+        );
+        handleSetData(essentialData);
       } catch (err) {}
     }
-    async function fetchCountry() {
-      try {
-        const res = await fetch(
-          `http://api.positionstack.com/v1/forward?access_key=87232def3711d6af90f0213a9cc33b1b&query=${city}`
-        );
-        if (!res.ok) throw new Error("Country not found, please try again");
-        const data = await res.json();
-        const country = data.data[0].country;
-        return country;
-      } catch (err) {}
-    }
-    async function fetchCityImage() {
-      try {
-        const res = await fetch(
-          `https://api.unsplash.com/search/photos?query=${city}&client_id=dnAcCMN0ayxLzG_D8NLYsu6Of8xd-2R1QqK54GQrJnk`
-        );
-
-        if (!res.ok) throw new Error("Country not found, please try again");
-        const data = await res.json();
-        const cityImage = data.results[0].urls.full;
-        return cityImage;
-      } catch (err) {
-        console.log(err.messaage);
-      }
-    }
-    function getDay() {
-      const today = new Date();
-
-      const daysOfWeek = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-
-      const dayOfWeek = today.getDay();
-
-      const dayName = daysOfWeek[dayOfWeek];
-
-      return dayName;
-    }
-
     fetchForecastData();
   }
   handleFetch();
@@ -289,15 +304,18 @@ function Temperature({ tempMax, tempMin, layout }) {
 function Title({ children }) {
   return <h2 className="title">{children}</h2>;
 }
-function ForecastForDays({ children }) {
+function ForecastForDays({ fiveDayData }) {
   return (
     <div className="forecast-container box">
       <Title>Forecast</Title>
-      <div className=" grid grid--5">{children}</div>
+      <div className=" grid grid--5">
+        {/* fiveDayData.map((data)=>
+        <ForecastForOneDay data={data} />) */}
+      </div>
     </div>
   );
 }
-function ForecastForOneDay({ children }) {
+function ForecastForOneDay({ data }) {
   return (
     <div className="forecast-for-one-day ">
       <p>Monday</p>
@@ -311,3 +329,16 @@ function ForecastForOneDay({ children }) {
     </div>
   );
 }
+
+// async function fetchForecastData() {
+//   try {
+//     e.preventDefault();
+//     const res = await fetch(
+//       `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}`
+//     );
+//     if (!res.ok) throw new Error("City not found, please try again");
+//     const data = await res.json();
+
+//     // handleSetData(necessaryData);
+//   } catch (err) {}
+// }
