@@ -233,6 +233,7 @@ function Navigator({ link, children }) {
 function Main({ children }) {
   return <div className="main">{children}</div>;
 }
+
 function Header({ cityImage, city, country }) {
   return (
     <div className="header">
@@ -272,6 +273,7 @@ function Header({ cityImage, city, country }) {
     </div>
   );
 }
+
 function WeatherReport({ children }) {
   return <div className="weather-report grid">{children}</div>;
 }
@@ -324,6 +326,7 @@ function Temperature({ tempMax, tempMin, layout }) {
 function Title({ children }) {
   return <h2 className="title">{children}</h2>;
 }
+
 function ForecastForDays({ fiveDayData }) {
   return (
     <div className="forecast-container box">
@@ -340,6 +343,7 @@ function ForecastForDays({ fiveDayData }) {
     </div>
   );
 }
+
 function ForecastForOneDay({ data }) {
   return (
     <div className="forecast-for-one-day ">
