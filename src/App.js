@@ -1,90 +1,140 @@
-import React, { Fragment, useState } from "react";
-
-async function fetchCountry(city) {
-  try {
-    const res = await fetch(
-      `http://api.positionstack.com/v1/forward?access_key=87232def3711d6af90f0213a9cc33b1b&query=${city}`
-    );
-    if (!res.ok) throw new Error("Country not found, please try again");
-    const data = await res.json();
-    const country = data.data[0].country;
-    return country;
-  } catch (err) {
-    console.log(err.message);
-  }
-}
-async function fetchCityImage(city) {
-  try {
-    const res = await fetch(
-      `https://api.unsplash.com/search/photos?query=${city}&client_id=dnAcCMN0ayxLzG_D8NLYsu6Of8xd-2R1QqK54GQrJnk`
-    );
-    if (!res.ok) throw new Error("City image not found, please try again");
-    const data = await res.json();
-    const cityImage = data.results[0].urls.full;
-    return cityImage;
-  } catch (err) {
-    console.log(err.message);
-  }
-}
-
-function getDayName(dateString) {
-  const date = new Date(dateString);
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const dayOfWeek = date.getDay();
-  return daysOfWeek[dayOfWeek];
-}
-
-async function getEssentialData(data, city) {
-  try {
-    const country = await fetchCountry(city);
-    const cityImage = await fetchCityImage(city);
-    const day = getDayName(data.dt_txt.split(" ")[0]);
-    const weatherIcon = ` https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-    const description = data.weather[0].description;
-    const tempMax = data.main.temp_max.toFixed(1);
-    const tempMin = data.main.temp_min.toFixed(1);
-    const temp = data.main.temp;
-    const humidity = data.main.humidity;
-
-    const necessaryData = {
-      city,
-      country,
-      cityImage,
-      day,
-      weatherIcon,
-      description,
-      tempMax,
-      tempMin,
-      temp,
-      humidity,
-    };
-
-    return necessaryData;
-  } catch (err) {
-    console.log(err.message);
-  }
-}
+import React, { Fragment, useState, useEffect } from "react";
 
 export default function App() {
   const [todayData, setTodayData] = useState({});
   const [fiveDayData, setFiveDayData] = useState([]);
+  const [city, setCity] = useState("Addis Ababa");
+
+  useEffect(
+    function () {
+      fetchForecastData(city);
+    },
+    [city]
+  );
+
+  async function fetchForecastData(city) {
+    try {
+      const KEY = "08bd2aacf2a275d513f3d7615a27a8e6";
+      const res = await fetch(
+        `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${KEY}`
+      );
+      if (!res.ok) throw new Error("City not found, please try again");
+      const data = await res.json();
+      const cityImage = await fetchCityImage(city);
+      const { lat, lon } = data.city.coord;
+      const country = await fetchCountryByCoords(lat, lon);
+      console.log(data);
+      let today = "";
+      const forecastData = data.list.filter((newData) => {
+        const date = newData.dt_txt.split(" ")[0];
+        console.log(date);
+        const flag = date !== today;
+        today = date;
+        return flag;
+      });
+      console.log(forecastData);
+      const essentialData = await Promise.all(
+        forecastData.map(async (data) => {
+          data = { ...data, country: country, cityImage: cityImage };
+          const essential = await getEssentialData(data, city);
+          return essential;
+        })
+      );
+      handleSetData(essentialData);
+    } catch (err) {}
+  }
+
+  async function fetchCityImage(city) {
+    try {
+      const res = await fetch(
+        `https://api.unsplash.com/search/photos?query=${city}&client_id=dnAcCMN0ayxLzG_D8NLYsu6Of8xd-2R1QqK54GQrJnk`
+      );
+      if (!res.ok) throw new Error("City image not found, please try again");
+      const data = await res.json();
+      const cityImage = data.results[0].urls.full;
+      return cityImage;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async function getEssentialData(data, city) {
+    try {
+      const id = data.dt;
+      const country = data.country;
+      const cityImage = data.cityImage;
+      const day = getDayName(data.dt_txt.split(" ")[0]);
+      const weatherIcon = ` https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+      const description = data.weather[0].description;
+      const tempMax = data.main.temp_max.toFixed(1);
+      const tempMin = data.main.temp_min.toFixed(1);
+      const temp = data.main.temp;
+      const humidity = data.main.humidity;
+
+      const necessaryData = {
+        id,
+        city,
+        country,
+        cityImage,
+        day,
+        weatherIcon,
+        description,
+        tempMax,
+        tempMin,
+        temp,
+        humidity,
+      };
+
+      return necessaryData;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async function fetchCountryByCoords(lat, lng) {
+    const API_KEY = "bfadb01374ea4cd2b7cff365950ad3f7"; // Get this key from Google Cloud Console.
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}%2C${lng}&key=bfadb01374ea4cd2b7cff365950ad3f7`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Country not found, please try again");
+      const data = await res.json();
+      const country = data.results[0].components.country;
+      return country;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+  function getDayName(dateString) {
+    const date = new Date(dateString);
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dayOfWeek = date.getDay();
+    return daysOfWeek[dayOfWeek];
+  }
+
+  function handleFetch(e, city) {
+    // console.log(e);
+    e.preventDefault();
+    setCity(city);
+    fetchForecastData(city);
+  }
   function handleSetData(necessaryData) {
     setTodayData(necessaryData[0]);
     setFiveDayData(necessaryData.slice(1));
   }
+
   return (
     <>
       <NavBar>
         <Logo />
-        <SearchBar handleSetData={handleSetData} />
+        <SearchBar handleFetch={handleFetch} handleSetData={handleSetData} />
         <Navigation>
           <Navigator link={"/"}>Home</Navigator>
           <Navigator link={"/About"}>About</Navigator>
@@ -125,44 +175,14 @@ function Logo() {
   );
 }
 
-function SearchBar({ handleSetData }) {
-  const [city, setCity] = useState("Addis Ababa");
-
-  function handleInput(e) {
-    setCity(e.target.value);
+function SearchBar({ handleFetch }) {
+  const [beingSearched, setBeingSearched] = useState("");
+  function handleBeingSearched(e) {
+    setBeingSearched(e.target.value);
   }
-  function handleFetch(e) {
-    const KEY = "08bd2aacf2a275d513f3d7615a27a8e6";
-
-    async function fetchForecastData() {
-      try {
-        const res = await fetch(
-          `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${KEY}`
-        );
-        if (!res.ok) throw new Error("City not found, please try again");
-        const data = await res.json();
-        let today = "";
-        const forecastData = data.list.filter((newData) => {
-          const date = newData.dt_txt.split(" ")[0];
-          const flag = date !== today;
-          today = date;
-          return flag;
-        });
-        const essentialData = await Promise.all(
-          forecastData.map(async (data) => {
-            const essential = await getEssentialData(data, city);
-            return essential;
-          })
-        );
-        handleSetData(essentialData);
-      } catch (err) {}
-    }
-    fetchForecastData();
-  }
-  handleFetch();
 
   return (
-    <form className="form" onSubmit={handleFetch}>
+    <form className="form" onSubmit={(e) => handleFetch(e, beingSearched)}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -181,8 +201,8 @@ function SearchBar({ handleSetData }) {
       <input
         className="search"
         type="text"
-        value={city}
-        onChange={handleInput}
+        value={beingSearched}
+        onChange={handleBeingSearched}
         placeholder="Addis Ababa"
       />
       <Button>Search</Button>
@@ -266,7 +286,7 @@ function LocalWeatherReport({
 }) {
   return (
     <div className="local-weather-report box">
-      <Title>Local Weather Report</Title>
+      <Title>Real-Time Weather Report</Title>
       <div className="report-description">
         <div className="img-humid">
           <img
@@ -295,8 +315,8 @@ function LocalWeatherReport({
 function Temperature({ tempMax, tempMin, layout }) {
   return (
     <div className={`temperature ${layout}`}>
-      <p className="temp ">{tempMax}&deg;C</p>
-      <p className="temp">{tempMin}&deg;C</p>
+      <p className="temp ">Max Temp: {tempMax}&deg;C</p>
+      <p className="temp">Min Temp: {tempMin}&deg;C</p>
     </div>
   );
 }
@@ -308,9 +328,14 @@ function ForecastForDays({ fiveDayData }) {
   return (
     <div className="forecast-container box">
       <Title>Forecast</Title>
-      <div className=" grid grid--5">
-        {/* fiveDayData.map((data)=>
-        <ForecastForOneDay data={data} />) */}
+      <div
+        className={`container grid ${
+          fiveDayData.length === 4 ? "grid--4" : "grid--5"
+        }`}
+      >
+        {fiveDayData.map((data) => (
+          <ForecastForOneDay key={data.id} data={data} />
+        ))}
       </div>
     </div>
   );
@@ -318,14 +343,18 @@ function ForecastForDays({ fiveDayData }) {
 function ForecastForOneDay({ data }) {
   return (
     <div className="forecast-for-one-day ">
-      <p>Monday</p>
+      <p>{data.day} </p>
       <img
         className="forecast-icon"
-        src="city-pic.jpg"
+        src={data.weatherIcon}
         alt="corresponding icon for the weather"
       />
-      <Temperature layout={"vertical"} />
-      <p className="humidity">Humidity</p>
+      <Temperature
+        tempMax={data.tempMax}
+        tempMin={data.tempMin}
+        layout={"vertical"}
+      />
+      <p className="humidity">Humidity: {data.humidity}</p>
     </div>
   );
 }

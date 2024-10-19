@@ -1,0 +1,119 @@
+/* - Font sizes (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
+
+- Spacing system (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128 */
+
+/*  -> we always use em for media queries*/
+
+/* ********************************  */
+/* For Small Laptops(Below 1366px) ->  1366px/16px = 85.375em */
+/* ******************************** */
+@media (max-width: 99em) {
+  .weather-report {
+    grid-template-columns: 1fr;
+  }
+  .local-weather-report {
+    width: 70rem;
+    margin: auto;
+  }
+}
+@media (max-width: 83.5em) {
+  .search {
+    width: 40rem;
+  }
+}
+
+/* ********************************  */
+/* For Landscape Tablets(Below 1200px) ->  1200px/16px = 75em */
+/* ******************************** */
+
+@media (max-width: 75em) {
+  /* 9px/16px =  0.5625*/
+  /* font-size Adjustment */
+  html {
+    font-size: 56.25%;
+  }
+}
+
+/* ********************************  */
+/* For Tablet(Below 960px) ->  960px/16px = 60em */
+/* ******************************** */
+@media (max-width: 68.75em) {
+  .search {
+    width: 30rem;
+  }
+}
+@media (max-width: 62.75em) {
+  .search {
+    width: 25rem;
+  }
+}
+@media (max-width: 60.75em) {
+  /* 8px/16px =  0.5*/
+  /* font-size Adjustment */
+  html {
+    font-size: 50%;
+  }
+}
+@media (max-width: 51.875em) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    row-gap: 2rem;
+  }
+  .forecast-container {
+    height: 71rem;
+  }
+}
+@media (max-width: 54em) {
+  .nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-self: center;
+    margin-bottom: 10rem;
+  }
+  .logo {
+    grid-column: 1/-1;
+    margin: auto;
+  }
+  .navigation {
+    margin-left: 30rem;
+  }
+}
+
+/* ********************************  */
+/* For Small-Tablets(Below 760px) ->  760px/16px = 47.5em */
+/* ******************************** */
+@media (max-width: 47.5em) {
+  /* 7px/16px =  0.4375*/
+  html {
+    font-size: 43.75%;
+  }
+}
+
+@media (max-width: 38.75em) {
+  .navigation {
+    margin-left: 10rem;
+  }
+}
+/* ********************************  */
+/* For Phones(Below 560px) ->  560px/16px = 35em */
+/* ******************************** */
+
+@media (max-width: 36.375em) {
+  .header {
+    padding: 0 5rem;
+  }
+}
+@media (max-width: 35em) {
+  /* 6px/16px =  37.5*/
+  html {
+    font-size: 37.5%;
+  }
+}
+@media (max-width: 28.75em) {
+  .header {
+    padding: 1rem;
+  }
+}
