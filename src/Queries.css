@@ -41,7 +41,7 @@
     row-gap: 2rem;
   }
   .forecast-container {
-    height: 71rem;
+    height: 100rem;
   }
 }
 @media (max-width: 54em) {

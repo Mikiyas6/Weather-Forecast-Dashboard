@@ -1,70 +1,103 @@
-# Getting Started with Create React App
+# 🌦️ **Weather Forecast App**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the **Weather Forecast App**! This app provides real-time weather information and a 5-day forecast for cities around the world. Easily search for any city to view temperature, weather conditions, and humidity details — all in an engaging design.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📸 Screenshot
 
-### `npm start`
+![Steps Component](./public/Weather-Forecast.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🔗 Links
 
-### `npm test`
+- Github Repo: [Github-link](https://github.com/Mikiyas6/Weather-Forecast-Dashboard)
+- Live Site URL: [Page-link](https://my-weather-forecast-dashboard.netlify.app/)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠️ **Setup Instructions**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Follow these steps to install dependencies and run the project locally:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Clone the Repository**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```bash
+   git clone <repository-url>
+   cd <repository-folder>
+   ```
 
-### `npm run eject`
+2. **Install Dependencies**  
+   Make sure you have **Node.js** installed, then run:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   ```bash
+   npm install
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **API Setup**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   - Obtain an API key from [OpenWeather](https://openweathermap.org/).
+   - Get an Unsplash API key from [Unsplash](https://unsplash.com/developers).
+   - Replace the placeholder keys in `App.js` with your API keys:
+     ```javascript
+     const WEATHER_API_KEY = "your_openweather_api_key";
+     const UNSPLASH_CLIENT_ID = "your_unsplash_client_id";
+     ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. **Run the Project**  
+   Start the app in development mode:
+   ```bash
+   npm start
+   ```
+   The app will open at `http://localhost:3000` in your browser. 🎉
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 💻 **Technologies Used**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project leverages the following tools and technologies:
 
-### Code Splitting
+- **React.js** ⚛️ - JavaScript library for building user interfaces
+- **CSS** 🎨 - Styling the components
+- **OpenWeather API** 🌐 - Fetching weather data
+- **Unsplash API** 🖼️ - Retrieving city images
+- **Google Geocoding API** 🗺️ - Reverse geolocation for country lookup
+- **Media Queries** 📱 - Ensuring responsive design across devices
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🐞 **Known Issues & Assumptions**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **Assumptions:**
 
-### Making a Progressive Web App
+  - Default city is set to **Addis Ababa** on initial load.
+  - The forecast only updates when the user submits a valid city name.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **Known Issues:**
+  - **Image Retrieval Limitations:** Unsplash API may not always return relevant or available city images.
+  - **API Key Restrictions:** If API keys are overused or misconfigured, some features may not work as expected.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📂 **Project Structure**
 
-### Deployment
+```bash
+├── public/
+│   └── index.html
+├── src/
+│   ├── App.js          # Main React component
+│   ├── index.css       # Global styling
+│   ├── Queries.css     # Responsive design styles
+│   └── index.js        # Entry point for React app
+├── package.json        # Project dependencies and scripts
+└── README.md           # Documentation
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## 📧 **Contact**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+For any questions or feedback, feel free to reach out!
+
+- **Email:** Mkiyas.Tewodroes@A2SV.org
