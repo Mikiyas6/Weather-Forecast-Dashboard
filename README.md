@@ -100,4 +100,4 @@ This project leverages the following tools and technologies:
 
 For any questions or feedback, feel free to reach out!
 
-- **Email:** Mkiyas.Tewodroes@A2SV.org
+- **Email:** Mikiyas.Tewodroes@A2SV.org
