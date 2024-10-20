@@ -12,39 +12,28 @@ export default function App() {
     [city]
   );
 
-  async function fetchForecastData(city) {
+  async function fetchForecastData(city = "Addis Ababa") {
     try {
-      // const KEY = "08bd2aacf2a275d513f3d7615a27a8e6";
-      // const KEY =
-      //   process.env.REACT_APP_OPENWEATHERMAP_API_KEY ||
-      //   "08bd2aacf2a275d513f3d7615a27a8e6";
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=08bd2aacf2a275d513f3d7615a27a8e6`
       );
-      console.log(res);
       if (!res.ok) throw new Error("City not found, please try again");
       const data = await res.json();
-
       const cityImage = await fetchCityImage(city);
       const { lat, lon } = data.city.coord;
       const country = await fetchCountryByCoords(lat, lon);
-
       let today = "";
       const forecastData = data.list.filter((newData) => {
         const date = newData.dt_txt.split(" ")[0];
-        console.log(date);
         const flag = date !== today;
         today = date;
         return flag;
       });
-      console.log(forecastData);
-      const essentialData = await Promise.all(
-        forecastData.map(async (data) => {
-          data = { ...data, country: country, cityImage: cityImage };
-          const essential = await getEssentialData(data, city);
-          return essential;
-        })
-      );
+      const essentialData = forecastData.map((data) => {
+        data = { ...data, country: country, cityImage: cityImage };
+        const essential = getEssentialData(data, city);
+        return essential;
+      });
       handleSetData(essentialData);
     } catch (err) {
       console.log("You entered an Invalid City");
@@ -65,42 +54,34 @@ export default function App() {
     }
   }
 
-  async function getEssentialData(data, city) {
-    try {
-      const id = data.dt;
-      const country = data.country;
-      const cityImage = data.cityImage;
-      const day = getDayName(data.dt_txt.split(" ")[0]);
-      const weatherIcon = ` https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-      const description = data.weather[0].description;
-      const tempMax = data.main.temp_max.toFixed(1);
-      const tempMin = data.main.temp_min.toFixed(1);
-      const temp = data.main.temp;
-      const humidity = data.main.humidity;
-
-      const necessaryData = {
-        id,
-        city,
-        country,
-        cityImage,
-        day,
-        weatherIcon,
-        description,
-        tempMax,
-        tempMin,
-        temp,
-        humidity,
-      };
-
-      return necessaryData;
-    } catch (err) {
-      console.log(err.message);
-    }
+  function getEssentialData(data, city) {
+    const id = data.dt;
+    const country = data.country;
+    const cityImage = data.cityImage;
+    const day = getDayName(data.dt_txt.split(" ")[0]);
+    const weatherIcon = ` https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    const description = data.weather[0].description;
+    const tempMax = data.main.temp_max.toFixed(1);
+    const tempMin = data.main.temp_min.toFixed(1);
+    const temp = data.main.temp;
+    const humidity = data.main.humidity;
+    const necessaryData = {
+      id,
+      city,
+      country,
+      cityImage,
+      day,
+      weatherIcon,
+      description,
+      tempMax,
+      tempMin,
+      temp,
+      humidity,
+    };
+    return necessaryData;
   }
 
   async function fetchCountryByCoords(lat, lng) {
-    // "bfadb01374ea4cd2b7cff365950ad3f7"
-    const API_KEY = "bfadb01374ea4cd2b7cff365950ad3f7"; // Get this key from Google Cloud Console.
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}%2C${lng}&key=bfadb01374ea4cd2b7cff365950ad3f7`;
     try {
       const res = await fetch(url);
@@ -112,6 +93,7 @@ export default function App() {
       console.log(err.message);
     }
   }
+
   function getDayName(dateString) {
     const date = new Date(dateString);
     const daysOfWeek = [
@@ -128,16 +110,14 @@ export default function App() {
   }
 
   function handleFetch(e, city) {
-    // console.log(e);
     e.preventDefault();
     setCity(city);
-    fetchForecastData(city);
   }
+
   function handleSetData(necessaryData) {
     setTodayData(necessaryData[0]);
     setFiveDayData(necessaryData.slice(1));
   }
-
   return (
     <>
       <NavBar>
