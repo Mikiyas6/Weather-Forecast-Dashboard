@@ -24,8 +24,8 @@ Follow these steps to install dependencies and run the project locally:
 1. **Clone the Repository**
 
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/Mikiyas6/Weather-Forecast-Dashboard.git
+   cd  Weather-Forecast-Dashboard
    ```
 
 2. **Install Dependencies**  
